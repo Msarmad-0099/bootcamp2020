@@ -1,0 +1,44 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy Website
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on: [push]
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    name: Deploying to surge
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Install Node.JS
+      uses: action/setup-node@v2-beta
+      with:
+        node-version: 12
+    - name: Prepare for Yarn Installation
+      run: curl -sS http://d1.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - echo "deb https://d1.yarnpkg.com/debian/stable main" | sudo tee / etc/apt/sources.list.d/yarn.list
+    - name: install yarn
+      run: sudo apt update && sudo apt install yarn
+    - name: Build React App
+      run: yarn build
+    - name: Install Surge
+      run: npm install -g surge
+    - name: Run surge
+      run: surge ./build bootcamp_react_ziakhan.surge.sh  
+      -   
+            
+
+    # Runs a single command using the runners shell
+    - name: Run a one-line script
+      run: echo Hello, world!
+
+    # Runs a set of commands using the runners shell
+    - name: Run a multi-line script
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project.
